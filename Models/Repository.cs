@@ -3,14 +3,22 @@ using System.IO;
 
 namespace GitRestCore.Models
 {
-    public class Repository
+    public class Repository : Model, IRepository
     {
         public int ProjectId { set; get; }
+        /// <summary>
+        /// Determines whether repository exists
+        /// </summary>
         public bool HasInitialized { get; protected set; }
 
         public string Path()
         {
             return "c:\\Repository\\" + Convert.ToString(ProjectId);
+        }
+
+        public bool repositoryPathExists()
+        {
+            return Directory.Exists(Path());
         }
 
         public void Save()
