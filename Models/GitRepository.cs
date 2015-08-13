@@ -1,15 +1,21 @@
-﻿using System;
+﻿using LibGit2Sharp;
+using System;
 using System.IO;
 
 namespace GitRestCore.Models
 {
-    public class Repository : Model, IRepository
+    public class GitRepository : Model, IModel
     {
         public int ProjectId { set; get; }
+
         /// <summary>
-        /// Determines whether repository exists
+        /// Returns <see cref="Repository">LibGit2Sharp.Repository</see>
         /// </summary>
-        public bool HasInitialized { get; protected set; }
+        /// <returns>Repository</returns>
+        public Repository getLibGitRepository()
+        {
+            return new Repository(Path());
+        }
 
         public string Path()
         {
@@ -24,7 +30,10 @@ namespace GitRestCore.Models
         public void Save()
         {
             if (!HasInitialized) {
-                LibGit2Sharp.Repository.Init(Path());
+                Repository.Init(Path());
+                var repo = getLibGitRepository();
+                repo.Commit("Repository Created");
+
                 HasInitialized = true;
             }
         }
@@ -43,6 +52,20 @@ namespace GitRestCore.Models
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Creates a new branch
+        /// </summary>
+        /// <param name="name"></param>
+        public void CreateBranch(string name)
+        {
+            getLibGitRepository().CreateBranch(name);
+        }
+
+        public string ToJson()
+        {
+            return ConvertToJson(new { ProjectId });
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿namespace GitRestCore.Models
 {
-    interface IRepository
+    public interface IModel
     {
+        void Save();
         /// <summary>
         /// Converts resource to JSON string
         /// </summary>
