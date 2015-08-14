@@ -46,12 +46,12 @@ namespace GitRestCore.Models
         {
             try {
                 Directory.Delete(Path(), true);
+
+                return true;
             } catch (Exception)
             {
                 return false;
             }
-
-            return true;
         }
 
         /// <summary>

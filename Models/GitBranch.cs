@@ -43,6 +43,22 @@ namespace GitRestCore.Models
             }
         }
 
+        /// <summary>
+        /// Removes 
+        /// </summary>
+        /// <returns></returns>
+        public bool Remove()
+        {
+            try {
+                getRepository().getLibGitRepository().Branches.Remove(Convert.ToString(Id));
+
+                return true;
+            } catch
+            {
+                return false;
+            }
+        }
+
         public string ToJson()
         {
             return ConvertToJson(new { Id, ProjectId, Created = Exists() });

@@ -52,9 +52,7 @@ namespace GitRestCore.Controllers
             if (!repository.repositoryPathExists())
             {
                 Response.StatusCode = Convert.ToInt16(HttpStatusCode.NotFound);
-            }
-
-            if (repository.Remove())
+            } else if (repository.Remove())
             {
                 Response.StatusCode = Convert.ToInt16(HttpStatusCode.NoContent);
             }

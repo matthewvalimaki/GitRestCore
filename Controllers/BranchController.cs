@@ -57,9 +57,18 @@ namespace GitRestCore.Controllers
 
         // DELETE api/repository/1
         [HttpDelete("{branchId:int:min(1)}")]
-        public void Delete(int branchId)
+        public void Delete(int projectId, int branchId)
         {
+            GitBranch branch = new GitBranch { Id = branchId, ProjectId = projectId };
 
+            // make sure the repository exists
+            if (!branch.Exists())
+            {
+                Response.StatusCode = Convert.ToInt16(HttpStatusCode.NotFound);
+            } else if (branch.Remove())
+            {
+                Response.StatusCode = Convert.ToInt16(HttpStatusCode.NoContent);
+            }
         }
     }
 }
