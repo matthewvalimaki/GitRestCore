@@ -2,6 +2,7 @@
 using GitRestCore.Models;
 using Microsoft.AspNet.Mvc;
 using System;
+using System.Diagnostics;
 using System.Net;
 
 namespace GitRestCore.Controllers
@@ -52,7 +53,8 @@ namespace GitRestCore.Controllers
         [HttpPut("{branchId:int:min(1)}")]
         public void Put(int projectId, int branchId)
         {
-
+            Debug.WriteLine("HttpPut");
+            Response.StatusCode = Convert.ToInt16(HttpStatusCode.NoContent);
         }
 
         // DELETE api/repository/1

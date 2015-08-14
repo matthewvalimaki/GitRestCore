@@ -17,9 +17,21 @@ namespace GitRestCore.Models
             return new Repository(Path());
         }
 
+        public Repository Clone()
+        {
+            Repository.Clone(Path(), ClonePath());
+
+            return new Repository(ClonePath());
+        }
+
         public string Path()
         {
             return "c:\\Repository\\" + Convert.ToString(ProjectId);
+        }
+
+        public string ClonePath()
+        {
+            return Path() + "_clone";
         }
 
         public bool repositoryPathExists()
@@ -30,10 +42,7 @@ namespace GitRestCore.Models
         public void Save()
         {
             if (!HasInitialized) {
-                Repository.Init(Path());
-                var repo = getLibGitRepository();
-                repo.Commit("Repository Created");
-
+                Repository.Init(Path(), true);
                 HasInitialized = true;
             }
         }
@@ -52,6 +61,39 @@ namespace GitRestCore.Models
             {
                 return false;
             }
+        }
+
+        public bool RemoveClone()
+        {
+            try
+            {
+                DeleteReadOnlyDirectory(ClonePath());
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Due to .git containing read-only files this method is needed to remove those files.
+        /// </summary>
+        /// <param name="directory"></param>
+        protected static void DeleteReadOnlyDirectory(string directory)
+        {
+            foreach (var subdirectory in Directory.EnumerateDirectories(directory))
+            {
+                DeleteReadOnlyDirectory(subdirectory);
+            }
+            foreach (var fileName in Directory.EnumerateFiles(directory))
+            {
+                var fileInfo = new FileInfo(fileName);
+                fileInfo.Attributes = FileAttributes.Normal;
+                fileInfo.Delete();
+            }
+            Directory.Delete(directory);
         }
 
         /// <summary>

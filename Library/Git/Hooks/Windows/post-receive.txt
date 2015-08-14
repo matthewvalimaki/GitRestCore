@@ -1,0 +1,2 @@
+﻿#!/bin/sh
+curl -X PUT -H 'Content-Length: 0' http://localhost:53590/api/v1/repository/1/branch/2

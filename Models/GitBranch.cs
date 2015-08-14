@@ -1,5 +1,7 @@
 ﻿using LibGit2Sharp;
 using System;
+using System.Diagnostics;
+using System.IO;
 
 namespace GitRestCore.Models
 {
@@ -15,6 +17,11 @@ namespace GitRestCore.Models
         public GitRepository getRepository ()
         {
             return new GitRepository { ProjectId = ProjectId };
+        }
+
+        public string ReadmePath()
+        {
+            return getRepository().ClonePath() + Path.DirectorySeparatorChar + "README.md";
         }
 
         /// <summary>
@@ -38,8 +45,21 @@ namespace GitRestCore.Models
         {
             if (!HasInitialized)
             {
-                getRepository().CreateBranch(Convert.ToString(Id));
-                HasInitialized = true;
+                try {
+                    using (var repo = getRepository().Clone()) {
+                        repo.Commit("[Automation 1] Repository Created.");
+                        repo.CreateBranch(Convert.ToString(Id));
+                        repo.Network.Push(repo.Network.Remotes["origin"], @"refs/heads/" + Convert.ToString(Id));
+                        repo.Dispose();
+                    }
+
+                    getRepository().RemoveClone();
+
+                    HasInitialized = true;
+                } catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
             }
         }
 
